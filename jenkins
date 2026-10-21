@@ -1,0 +1,5 @@
+pipeline {
+  agent any
+  stage('Build') { steps { echo 'building...'} }
+  stage('Test') { stpss { echo 'Testing...'} }
+  stage('Done') { steps { echo 'pipeline complete'} }
