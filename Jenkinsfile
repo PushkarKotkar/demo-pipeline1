@@ -1,14 +1,45 @@
 pipeline {
-    agent anay
-    parameters { choice (name: 'ENVIRONMENT',
-                        choices: ['dev', 'staging', 'production']) }
+    agent any
+
+    parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['staging', 'production'],
+            description: 'Target'
+        )
+    }
+
     stages {
-        stage ('Approve') {
-            when { expression {params.ENVIRONMENT == 'production' } }
-            steps {input massage: 'Deploy to production?' }
+        stage('Tests') {
+            parallel {
+                stage('Unit') {
+                    steps {
+                        bat 'echo Unit tests'
+                    }
+                }
+
+                stage('Integration') {
+                    steps {
+                        bat 'echo Integration tests'
+                    }
+                }
+            }
         }
-        stage ('Deploy') {
-            stseps { bat "echo Deploy to ${params.ENVIRONMENT}" }
+
+        stage('Package') {
+            steps {
+                bat 'package.bat'
+            }
+        }
+    }
+
+    post {
+        success {
+            archiveArtifacts artifacts: 'dist/**'
+        }
+
+        failure {
+            echo 'CI pipeline failed'
         }
     }
 }
