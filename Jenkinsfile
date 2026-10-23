@@ -1,14 +1,14 @@
 pipeline {
     agent anay
-    parameters { choice(name: 'ENVIROMENT',
+    parameters { choice (name: 'ENVIRONMENT',
                         choices: ['dev', 'staging', 'production']) }
     stages {
-        stages('Approve') {
-            when { expression {params.ENVIROMENT == 'production' } }
+        stage ('Approve') {
+            when { expression {params.ENVIRONMENT == 'production' } }
             steps {input massage: 'Deploy to production?' }
         }
-        stages('Deploy') {
-            stseps { bat "echo Deploy to ${params.ENVIROMENT}" }
+        stage ('Deploy') {
+            stseps { bat "echo Deploy to ${params.ENVIRONMENT}" }
         }
     }
 }
